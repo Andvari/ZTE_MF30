@@ -23,17 +23,19 @@ class ZTE_MF30(object):
         self.ind = appindicator.Indicator("hello world client", "", appindicator.CATEGORY_APPLICATION_STATUS)
         self.ind.set_status (appindicator.STATUS_ACTIVE)
         
-        path = os.getcwd()
-        self.ind.set_icon_theme_path(str(path) + "/images")
+        #path = os.getcwd()
+        #self.ind.set_icon_theme_path(str(path) + "/images")
+        self.ind.set_icon_theme_path("home/nemo/workspace/ZTE_MF30/src/images")
         self.ind.set_icon("router_on")
         
-        self.type_icon = gtk.gdk.pixbuf_new_from_file("images/radio.png")
-        self.battery_icon = gtk.gdk.pixbuf_new_from_file("images/battery.png")
-        pynotify.init ("ZTE_MF30")
+        #self.type_icon = gtk.gdk.pixbuf_new_from_file("images/radio.png")
+        #self.battery_icon = gtk.gdk.pixbuf_new_from_file("images/battery.png")
+	#pynotify.init ("ZTE_MF30")
 
         
         self.tmr = threading.Timer(0.5, self.on_timer)
         self.tmr.start()
+
         
     def on_timer(self):
         try:
