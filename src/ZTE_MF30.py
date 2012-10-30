@@ -10,24 +10,38 @@ import gtk
 import appindicator
 import urllib
 import threading
-import pynotify
+import dbus
+import dbus.service
+from dbus.mainloop.glib import DBusGMainLoop
 
-class ZTE_MF30(object):
+
+class ZTE_MF30(dbus.service.Object):
 
     def __init__(self):
-        self.old_bstatus = 0
-        self.bstatus = 0
-        self.old_type = "EDGE"
-        self.type = "3G"
+        try:
+            DBusGMainLoop(set_as_default=True)
+            dbus.SessionBus().get_object('home.nemo.zte_mf30', '/home/nemo/zte_mf30')
+
+            self.status = 1
+        except:
+            DBusGMainLoop(set_as_default=True)
+            dbus.service.Object.__init__(self, dbus.service.BusName('home.nemo.zte_mf30', dbus.SessionBus()), '/home/nemo/zte_mf30')
+
+            self.old_bstatus = 0
+            self.bstatus = 0
+            self.old_type = "EDGE"
+            self.type = "3G"
         
-        self.ind = appindicator.Indicator("hello world client", "", appindicator.CATEGORY_APPLICATION_STATUS)
-        self.ind.set_status (appindicator.STATUS_ACTIVE)
+            self.ind = appindicator.Indicator("hello world client", "", appindicator.CATEGORY_APPLICATION_STATUS)
+            self.ind.set_status (appindicator.STATUS_ACTIVE)
         
-        self.ind.set_icon_theme_path("home/nemo/workspace/ZTE_MF30/src/images")
-        self.ind.set_icon("router_on")
+            self.ind.set_icon_theme_path("home/nemo/workspace/ZTE_MF30/src/images")
+            self.ind.set_icon("router_on")
         
-        self.tmr = threading.Timer(0.5, self.on_timer)
-        self.tmr.start()
+            self.tmr = threading.Timer(0.5, self.on_timer)
+            self.tmr.start()
+            self.status = 0
+        
 
         
     def on_timer(self):
@@ -103,9 +117,12 @@ class ZTE_MF30(object):
         self.ind.set_menu(self.menu)
         
         self.tmr.start()
-            
+
 zte = ZTE_MF30()
-gtk.gdk.threads_init()
-gtk.main()
+
+if(zte.status == 0):
+    gtk.gdk.threads_init()
+    gtk.main()
+    
 os._exit(0)
 
